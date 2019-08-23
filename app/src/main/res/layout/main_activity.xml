@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+                name="adapter"
+                type="com.vit.demoloadmorerecyclerview.ui.MainAdapter"/>
+
+    </data>
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.MainActivity">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/layout_refresh"
+                app:refreshing="@{adapter.state.get() == -2}"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rcv"
+                    android:adapter="@{adapter}"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <ProgressBar
+                app:visibility="@{adapter.state.get() == -2}"
+                android:layout_centerInParent="true"
+                android:layout_width="50dp"
+                android:layout_height="50dp"/>
+
+        <LinearLayout
+                app:visibility="@{adapter.state.get() == 0 || adapter.state.get() == -3}"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+            <ImageView
+                    android:src="@mipmap/ic_launcher"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"/>
+
+            <TextView
+                    android:layout_marginTop="20dp"
+                    android:id="@+id/text_nodata"
+                    android:text="@{adapter.state.get() == 0 ? @string/no_data : @string/error}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>
