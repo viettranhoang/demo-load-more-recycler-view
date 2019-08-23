@@ -1,7 +1,6 @@
 package com.vit.demoloadmorerecyclerview.ui.base
 
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.vit.demoloadmorerecyclerview.R
-import com.vit.demoloadmorerecyclerview.ui.MainModel
 import java.util.concurrent.Executors
 
 abstract class BaseAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) : ListAdapter<T, BaseViewHolder<T>>(
@@ -56,7 +54,7 @@ abstract class BaseAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) : ListAdap
     }
 
     override fun getItemCount(): Int {
-        return if(isLoadMore) currentList.size + 1 else currentList.size
+        return if(isLoadMore && currentList.isNotEmpty()) currentList.size + 1 else currentList.size
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -66,12 +64,9 @@ abstract class BaseAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) : ListAdap
 
     fun setList(list: List<T>) {
         if (list.isEmpty()) {
-            isLoadMore = false
-            notifyItemChanged(currentList.size)
-        } else {
-            isLoadMore = true
-        }
-        submitList(list)
+            submitList(null)
+            notifyDataSetChanged()
+        } else submitList(list)
         state.apply {
             set(list.size)
             notifyChange()
@@ -97,8 +92,6 @@ abstract class BaseAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) : ListAdap
     }
 
     fun error() {
-        isLoadMore = false
-        notifyItemChanged(currentList.size)
         state.apply {
             set(ERROR_STATE)
             notifyChange()

@@ -6,6 +6,7 @@
                 name="adapter"
                 type="com.vit.demoloadmorerecyclerview.ui.MainAdapter"/>
 
+        <import type="android.view.View"/>
     </data>
     <RelativeLayout
             android:layout_width="match_parent"
@@ -14,22 +15,25 @@
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/layout_refresh"
-                app:refreshing="@{adapter.state.get() == -2}"
+                app:refreshing="@{adapter.state.get() == -2 &amp;&amp; viewLoading.getVisibility() == View.GONE}"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rcv"
+                    app:spanCount="2"
                     android:adapter="@{adapter}"
                     android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <ProgressBar
-                app:visibility="@{adapter.state.get() == -2}"
+                android:id="@+id/viewLoading"
+                app:gone="@{adapter.state.get() != -2}"
+                android:visibility="visible"
                 android:layout_centerInParent="true"
                 android:layout_width="50dp"
                 android:layout_height="50dp"/>
@@ -39,8 +43,8 @@
                 android:gravity="center"
                 android:layout_centerInParent="true"
                 android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
             <ImageView
                     android:src="@mipmap/ic_launcher"
                     android:layout_width="100dp"

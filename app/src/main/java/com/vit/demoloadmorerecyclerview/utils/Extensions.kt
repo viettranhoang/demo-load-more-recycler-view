@@ -4,15 +4,14 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.view.ViewTreeObserver
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-inline fun RecyclerView.setLoadMoreListener(crossinline block: () -> Unit) {
-    addOnScrollListener(object: RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            if (!canScrollVertically(RecyclerView.VERTICAL)) {
-                block()
-            }
+inline fun <reified T : LinearLayoutManager> RecyclerView.setLoadMoreListener(crossinline block: (offset: Int) -> Unit) {
+    addOnScrollListener(object: EndlessRecyclerViewScrollListener(layoutManager as T) {
+        override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+            block(totalItemsCount)
         }
     })
 }
@@ -22,11 +21,3 @@ inline fun postDelay(time: Long = 0, crossinline block: () -> Unit) {
     handler.postDelayed({ block() }, time)
 }
 
-inline fun <T : View> T.afterMeasured(crossinline block: () -> Unit) {
-    viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-        override fun onGlobalLayout() {
-            viewTreeObserver.removeOnGlobalLayoutListener(this)
-            block()
-        }
-    })
-}
