@@ -2,7 +2,7 @@ package com.vit.demoloadmorerecyclerview.ui
 
 import androidx.recyclerview.widget.DiffUtil
 
-data class MainModel(val id: String, val title: String) {
+data class MainModel(val id: String, var title: String) {
 
     class MainDiffCallback : DiffUtil.ItemCallback<MainModel>() {
 

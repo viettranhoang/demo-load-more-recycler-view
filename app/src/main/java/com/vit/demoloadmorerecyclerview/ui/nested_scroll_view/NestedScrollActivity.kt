@@ -1,18 +1,18 @@
-package com.vit.demoloadmorerecyclerview.ui
+package com.vit.demoloadmorerecyclerview.ui.nested_scroll_view
 
 import android.os.Bundle
 import android.util.Log
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.vit.demoloadmorerecyclerview.R
-import com.vit.demoloadmorerecyclerview.databinding.MainActivityBinding
+import com.vit.demoloadmorerecyclerview.databinding.NestedScrollActivityBinding
+import com.vit.demoloadmorerecyclerview.ui.MainAdapter
+import com.vit.demoloadmorerecyclerview.ui.MainModel
 import com.vit.demoloadmorerecyclerview.ui.base.BaseActivity
-import com.vit.demoloadmorerecyclerview.utils.EndlessRecyclerViewScrollListener
+import com.vit.demoloadmorerecyclerview.utils.EndlessParentScrollListener
 import com.vit.demoloadmorerecyclerview.utils.postDelay
 
-class MainActivity : BaseActivity<MainActivityBinding>() {
+class NestedScrollActivity : BaseActivity<NestedScrollActivityBinding>() {
 
-    override fun getLayoutResource(): Int = R.layout.main_activity
+    override fun getLayoutResource(): Int = R.layout.nested_scroll_activity
 
     private val mainAdapter = MainAdapter()
 
@@ -22,19 +22,18 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
         with(binding) {
             adapter = mainAdapter
 
-            val scrollListener = object: EndlessRecyclerViewScrollListener(rcv.layoutManager as LinearLayoutManager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+            //loadmore with nestScrollView
+            viewScroll.setOnScrollChangeListener(object : EndlessParentScrollListener(rcv.layoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
                     Log.i("Mainnn", "loadmore")
                     postDelay(500) { mainAdapter.addList(fetchData(totalItemsCount)) }
                 }
-            }
+            })
 
-            rcv.addOnScrollListener(scrollListener)
 
             layoutRefresh.setOnRefreshListener {
                 getListFromServer()
                 mainAdapter.isLoadMore = true
-                scrollListener.resetState()
             }
         }
 
@@ -42,8 +41,7 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
     }
 
     fun fetchData(offset: Int = 0) = ArrayList<MainModel>().apply {
-        if (offset < LIST_SIZE) for (i in offset + 1..offset + LOAD_MORE_LIMIT)
-            add(MainModel("id$i", "title $i"))
+        if(offset < LIST_SIZE) for (i in offset + 1..offset + LOAD_MORE_LIMIT) add(MainModel("id$i", "title $i"))
     }
 
     fun getListFromServer() {
@@ -57,7 +55,7 @@ class MainActivity : BaseActivity<MainActivityBinding>() {
     }
 
     companion object {
-        private const val LIST_SIZE = 50
-        private const val LOAD_MORE_LIMIT = 10
+        private const val LIST_SIZE = 100
+        private const val LOAD_MORE_LIMIT = 12
     }
 }

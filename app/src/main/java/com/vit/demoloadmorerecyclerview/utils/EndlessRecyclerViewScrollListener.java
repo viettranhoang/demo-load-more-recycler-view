@@ -1,5 +1,7 @@
 package com.vit.demoloadmorerecyclerview.utils;
 
+import android.util.Log;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -91,6 +93,8 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
             onLoadMore(currentPage, totalItemCount, view);
             loading = true;
         }
+
+        Log.i("Loaddd", "" + lastVisibleItemPosition);
     }
 
     // Call this method whenever performing new searches

@@ -1,8 +1,8 @@
 package com.vit.demoloadmorerecyclerview.utils
 
 import android.view.View
-import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 
 class BindingUtils {
 
@@ -17,6 +17,12 @@ class BindingUtils {
         @JvmStatic
         fun setGone(view: View, value: Boolean) {
             if (value) view.visibility = View.GONE
+        }
+
+        @BindingAdapter("view_pool")
+        @JvmStatic
+        fun setViewPool(view: RecyclerView, value: RecyclerView.RecycledViewPool) {
+            view.setRecycledViewPool(value)
         }
     }
 

@@ -25,22 +25,24 @@ abstract class BaseAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) : ListAdap
     @NonNull
     abstract fun getLayoutResource(position: Int): Int
 
-    open fun getListener(): Any? = null
-
-    open fun getChildAdapter(item: T): Any? = null
+    open fun getChildAdapter(item: T): BaseAdapter<*>? = null
 
     open var isLoadMore = false
+
+    open var onClickItemListener: Any? = null
+
+    var parentItem: Any? = null
 
     val state = ObservableInt().apply {
         set(INIT_STATE)
     }
 
-    private val childAdapters = ArrayList<Any>()
+    private val childAdapters = ArrayList<BaseAdapter<*>>()
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): BaseViewHolder<T> {
         val binding =
             DataBindingUtil.inflate<ViewDataBinding>(LayoutInflater.from(viewGroup.context), viewType, viewGroup, false)
-        return BaseViewHolder(binding, getListener())
+        return BaseViewHolder(binding, onClickItemListener)
     }
 
     override fun onBindViewHolder(holder: BaseViewHolder<T>, position: Int) {
@@ -50,7 +52,7 @@ abstract class BaseAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) : ListAdap
         }
         val childAdapter = getChildAdapter(getItem(position))
         childAdapter?.let { childAdapters.add(it) }
-        holder.bindData(getItem(position), childAdapter = childAdapter)
+        holder.bindData(getItem(position), childAdapter = childAdapter, parentItem = parentItem)
     }
 
     override fun getItemCount(): Int {
@@ -97,6 +99,7 @@ abstract class BaseAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) : ListAdap
             notifyChange()
         }
     }
+
 
     @Nullable
     fun getItemByPosition(position: Int): T? = if (position >= itemCount) null else currentList[position]

@@ -10,14 +10,14 @@ open class BaseViewHolder<T>(
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
-    open fun bindData(t: T? = null, childAdapter: Any? = null) {
-        if (t != null) binding.setVariable(BR.item, t)
-        if (listener != null) {
-            binding.setVariable(BR.listener, listener)
+    open fun bindData(t: T? = null, childAdapter: BaseAdapter<*>? = null, parentItem: Any? = null) {
+        with(binding) {
+            t?.let { setVariable(BR.item, it) }
+            listener?.let { setVariable(BR.listener, it) }
+            childAdapter?.let { setVariable(BR.adapter, it) }
+            parentItem?.let { setVariable(BR.parentItem, it) }
+
+            executePendingBindings()
         }
-        if (childAdapter != null) {
-            binding.setVariable(BR.adapter, childAdapter)
-        }
-        binding.executePendingBindings()
     }
 }

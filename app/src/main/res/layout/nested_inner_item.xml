@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+                name="item"
+                type="com.vit.demoloadmorerecyclerview.ui.MainModel"/>
+
+        <variable
+                name="listener"
+                type="com.vit.demoloadmorerecyclerview.ui.MainModel.OnClickMainItemListener"/>
+
+        <variable
+                name="parentItem"
+                type="com.vit.demoloadmorerecyclerview.ui.MainModel" />
+
+    </data>
+    <TextView
+            android:padding="20dp"
+            android:onClick="@{() -> listener.onClickMainItem(parentItem)}"
+            android:text="@{item.title}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+</layout>

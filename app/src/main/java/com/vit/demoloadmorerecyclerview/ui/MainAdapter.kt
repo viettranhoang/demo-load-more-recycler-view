@@ -10,7 +10,7 @@ class MainAdapter : BaseAdapter<MainModel>(MainModel.MainDiffCallback()) {
 
     override var isLoadMore: Boolean = true
 
-    override fun getListener(): Any? = object : MainModel.OnClickMainItemListener {
+    override var onClickItemListener: Any? = object : MainModel.OnClickMainItemListener {
         override fun onClickMainItem(item: MainModel) {
             Log.i("onClickMainItem ", item.title)
         }
